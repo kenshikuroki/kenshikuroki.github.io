@@ -1,0 +1,229 @@
+/* =============================================================================
+CSS VARIABLES & ROOT CONFIGURATION
+============================================================================= */
+:root {
+  /* Primary Colors */
+  --primary-color: #6366f1;
+  --secondary-color: #4f46e5;
+  --accent-color: #8b5cf6;
+  /* Background Colors */
+  --bg-dark: #0f172a;
+  --bg-card: #1e293b;
+  --bg-section: #1a202c;
+  /* Text Colors */
+  --text-light: #f1f5f9;
+  --text-muted: #94a3b8;
+  /* UI Colors */
+  --border-color: #334155;
+  --highlight: #fbbf24;
+}
+
+/* =============================================================================
+GLOBAL STYLES & RESETS
+============================================================================= */
+* {
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: var(--text-light);
+  background-color: var(--bg-dark);
+  margin: 0;
+  padding: 0;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--text-light);
+}
+
+/* =============================================================================
+SCROLLBAR CUSTOMIZATION
+============================================================================= */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--accent-color);
+  border-radius: 4px;
+}
+
+/* =============================================================================
+NAVIGATION STYLES
+============================================================================= */
+.navbar-custom {
+  background: rgba(15, 23, 42, 0.95) !important;
+  backdrop-filter: blur(15px);
+  border-bottom: 1px solid var(--border-color);
+}
+.navbar-toggler {
+  border: none;
+  padding: 0.25rem 0.5rem;
+}
+.navbar-toggler:focus {
+  box-shadow: 0 0 0 0.25rem rgba(139, 92, 246, 0.25);
+}
+.navbar-nav .nav-link {
+  color: var(--text-light) !important;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  position: relative;
+}
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+  color: var(--accent-color) !important;
+  font-weight: 600;
+}
+/* Desktop-only underline animation */
+@media (min-width: 992px) {
+  .navbar-nav .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--accent-color);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+  }
+  .navbar-nav .nav-link:hover::after,
+  .navbar-nav .nav-link.active::after {
+    width: 100%;
+  }
+  .navbar-nav .nav-link.active::after {
+    height: 3px;
+  }
+}
+/* Mobile navigation improvements */
+@media (max-width: 991.98px) {
+  .navbar-nav {
+    padding-top: 1rem;
+  }
+  .navbar-nav .nav-link {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .navbar-nav .nav-link:hover {
+    background-color: rgba(139, 92, 246, 0.1);
+    border-radius: 4px;
+  }
+}
+
+/* =============================================================================
+LINKS STYLES
+============================================================================= */
+.links a {
+  font-size: 1rem;
+  display: inline-block;
+  color: var(--text-muted);
+  transition: all 0.3s ease;
+}
+.links a:hover {
+  color: var(--accent-color) !important;
+  transform: translateY(-3px);
+}
+
+/* =============================================================================
+HERO SECTION STYLES
+============================================================================= */
+.hero-section {
+  background: linear-gradient(135deg, var(--bg-dark) 0%, var(--secondary-color) 100%);
+  color: var(--text-light);
+  padding: 100px 0 50px;
+  position: relative;
+  overflow: hidden;
+}
+.profile-img {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border: 4px solid var(--primary-color);
+  box-shadow: 0 20px 40px rgba(99, 102, 241, 0.3);
+}
+
+/* =============================================================================
+SECTION STYLES
+============================================================================= */
+.section-dark {
+  background-color: var(--bg-section);
+  border-top: 1px solid var(--border-color);
+}
+.section-title {
+  position: relative;
+  margin-bottom: 20px;
+  color: var(--text-light);
+  font-weight: 700;
+  font-size: 2.0rem;
+}
+
+/* =============================================================================
+CARD COMPONENT STYLES
+============================================================================= */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+.card-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 8px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+.card-item-center {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 8px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.card-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+/* =============================================================================
+BADGE STYLES
+============================================================================= */
+.badge {
+  background: var(--secondary-color);
+  color: var(--text-light);
+  padding: 4px 12px;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-left: 10px;
+}
+
+/* =============================================================================
+FOOTER STYLES
+============================================================================= */
+footer {
+  background: var(--bg-dark);
+  border-top: 1px solid var(--border-color);
+  color: var(--text-light);
+}

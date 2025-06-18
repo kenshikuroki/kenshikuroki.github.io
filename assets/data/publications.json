@@ -1,0 +1,39 @@
+[
+  {
+    "title": "p–φ femtoscopic correlation analysis using a dynamical model",
+    "authors": "K. Kuroki and T. Hirano",
+    "citations": 0,
+    "conference": "The 21st International Conference on Strangeness in Quark Matter - SQM 2024",
+    "location": "Strasbourg, France",
+    "date": "Jun. 5, 2024",
+    "links": [
+      {
+        "type": "doi",
+        "url": "https://doi.org/10.1051/epjconf/202531603009",
+        "text": "EPJ Web Conf. 316, 03009 (2025)"
+      },
+      {
+        "type": "arxiv",
+        "url": "https://arxiv.org/abs/2410.01204",
+        "text": "arXiv:2410.01204 [hep-ph]"
+      }
+    ]
+  },
+  {
+    "title": "Hydrodynamic fluctuations and ultra-central flow puzzle in heavy-ion collisions",
+    "authors": "K. Kuroki, A. Sakai, K. Murase, and T. Hirano",
+    "citations": 13,
+    "links": [
+      {
+        "type": "doi",
+        "url": "https://doi.org/10.1016/j.physletb.2023.137958",
+        "text": "Physics Letters B 842, 137958 (2023)"
+      },
+      {
+        "type": "arxiv",
+        "url": "https://arxiv.org/abs/2305.01977",
+        "text": "arXiv:2305.01977[nucl-th]"
+      }
+    ]
+  }
+]
