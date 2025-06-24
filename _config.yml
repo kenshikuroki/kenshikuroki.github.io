@@ -1,2 +1,7 @@
 plugins:
   - jekyll-sitemap
+
+title: "Kenshi KUROKI, Ph.D. - Nuclear Physics Researcher"
+description: "Postdoctoral Researcher in High-Energy Nuclear Physics"
+url: "https://kenshikuroki.github.io"
+author: "Kenshi Kuroki"
