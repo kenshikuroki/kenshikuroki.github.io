@@ -23,7 +23,7 @@ jobs:
 
     permissions:
       contents: write  # リポジトリへの書き込み権限
-      pull-requests: write  # PR作成権限（オプション）
+      issues: write  # Issue作成権限を追加
 
     steps:
     - name: Checkout repository
@@ -35,12 +35,16 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: '3.11'
-        cache: 'pip'
 
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install requests
+        # requirements.txtが存在する場合のみインストール
+        if [ -f "requirements.txt" ]; then
+          pip install -r requirements.txt
+        else
+          pip install requests
+        fi
 
     - name: Verify files exist
       run: |
@@ -56,16 +60,17 @@ jobs:
 
     - name: Create backup
       run: |
-        mkdir -p backups
-        cp assets/data/publications.json backups/publications_backup_$(date +%Y%m%d_%H%M%S).json
-        echo "Backup created: backups/publications_backup_$(date +%Y%m%d_%H%M%S).json"
+        mkdir -p assets/data/backups
+        cp assets/data/publications.json assets/data/backups/publications_backup_$(date +%Y%m%d_%H%M%S).json
+        echo "Backup created: assets/data/backups/publications_backup_$(date +%Y%m%d_%H%M%S).json"
 
     - name: Run citation updater
       id: update
       run: |
         echo "Starting citation update..."
+        mkdir -p assets/data/log
         cd scripts
-        python citation_updater.py > ../update_log.txt 2>&1
+        python citation_updater.py > ../assets/data/log/update_log.txt 2>&1
 
         # 実行結果をチェック
         if [ $? -eq 0 ]; then
@@ -74,7 +79,7 @@ jobs:
         else
           echo "update_success=false" >> $GITHUB_OUTPUT
           echo "Citation update failed"
-          cat ../update_log.txt
+          cat ../assets/data/log/update_log.txt
           exit 1
         fi
 
@@ -87,17 +92,6 @@ jobs:
         else
           echo "has_changes=true" >> $GITHUB_OUTPUT
           echo "Changes detected in publications.json"
-
-          # 変更の概要を生成
-          echo "## Changes Summary" > changes_summary.md
-          echo "- File: assets/data/publications.json" >> changes_summary.md
-          echo "- Date: $(date)" >> changes_summary.md
-          echo "- Lines changed: $(git diff --numstat assets/data/publications.json | cut -f1,2)" >> changes_summary.md
-          echo "" >> changes_summary.md
-          echo "### Update Log:" >> changes_summary.md
-          echo '```' >> changes_summary.md
-          tail -20 update_log.txt >> changes_summary.md
-          echo '```' >> changes_summary.md
         fi
 
     - name: Configure Git
@@ -110,18 +104,14 @@ jobs:
       if: steps.changes.outputs.has_changes == 'true' && github.event.inputs.dry_run != 'true'
       run: |
         git add assets/data/publications.json
-
         # コミットメッセージの生成
         COMMIT_MSG="🤖 Auto-update: Publications citations ($(date +%Y-%m-%d))"
-
         # 更新統計を追加
-        if grep -q "Updated:" update_log.txt; then
-          UPDATED_COUNT=$(grep -c "Updated:" update_log.txt)
+        if grep -q "Updated:" assets/data/log/update_log.txt; then
+          UPDATED_COUNT=$(grep -c "Updated:" assets/data/log/update_log.txt)
           COMMIT_MSG="$COMMIT_MSG - Updated $UPDATED_COUNT publications"
         fi
-
         git commit -m "$COMMIT_MSG" -m "$(cat changes_summary.md)"
-
         echo "Changes committed successfully"
 
     - name: Push changes
@@ -136,9 +126,8 @@ jobs:
       with:
         name: citation-update-logs-${{ github.run_number }}
         path: |
-          update_log.txt
-          changes_summary.md
-          backups/
+          assets/data/log/update_log.txt
+          assets/data/backups/
         retention-days: 30
 
     - name: Create issue on failure
@@ -149,7 +138,7 @@ jobs:
           const fs = require('fs');
           let logContent = '';
           try {
-            logContent = fs.readFileSync('update_log.txt', 'utf8');
+            logContent = fs.readFileSync('assets/data/log/update_log.txt', 'utf8');
           } catch (error) {
             logContent = 'Log file not available';
           }
@@ -190,10 +179,10 @@ jobs:
         echo "- **Dry Run**: ${{ github.event.inputs.dry_run == 'true' && '🧪 Yes (no commit)' || '🚀 No (live run)' }}" >> $GITHUB_STEP_SUMMARY
         echo "- **Timestamp**: $(date)" >> $GITHUB_STEP_SUMMARY
 
-        if [ -f "update_log.txt" ]; then
+        if [ -f "assets/data/log/update_log.txt" ]; then
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Update Log (Last 10 lines):" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
-          tail -10 update_log.txt >> $GITHUB_STEP_SUMMARY
+          tail -10 assets/data/log/update_log.txt >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
         fi
