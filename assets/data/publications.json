@@ -14,7 +14,9 @@
         "text": "arXiv:2410.01204",
         "url": "https://arxiv.org/abs/2410.01204"
       }
-    ]
+    ],
+    "citations": 0,
+    "last_updated": "2025-06-26 10:53:24"
   },
   {
     "title": "Hydrodynamic fluctuations and ultra-central flow puzzle in heavy-ion collisions",
@@ -31,6 +33,8 @@
         "text": "arXiv:2305.01977",
         "url": "https://arxiv.org/abs/2305.01977"
       }
-    ]
+    ],
+    "citations": 13,
+    "last_updated": "2025-06-26 10:53:26"
   }
 ]
