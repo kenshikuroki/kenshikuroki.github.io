@@ -67,9 +67,10 @@ jobs:
     - name: Run citation updater
       id: update
       run: |
+        set -e
         echo "Starting citation update..."
         mkdir -p assets/data/log
-        python scripts/citation_updater.py > ../assets/data/log/update_log.txt 2>&1
+        python scripts/citation_updater.py > assets/data/log/update_log.txt 2>&1
 
         # 実行結果をチェック
         if [ $? -eq 0 ]; then
@@ -78,7 +79,7 @@ jobs:
         else
           echo "update_success=false" >> $GITHUB_OUTPUT
           echo "Citation update failed"
-          cat ../assets/data/log/update_log.txt
+          cat assets/data/log/update_log.txt
           exit 1
         fi
 
