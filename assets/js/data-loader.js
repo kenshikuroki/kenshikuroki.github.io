@@ -1,9 +1,10 @@
-// Data loader for publications and presentations
-class DataLoader {
+// Enhanced data loader for publications and presentations with rich metadata
+class EnhancedDataLoader {
   constructor() {
     this.publications = [];
     this.presentations = [];
   }
+
   async loadData() {
     try {
       // Load publications and presentations data
@@ -19,18 +20,17 @@ class DataLoader {
       // Render the sections
       this.renderPublications();
       this.renderPresentations();
-      // ローディングインジケータを非表示に
+      // Remove loading indicators
       document.getElementById('publications-loading')?.remove();
       document.getElementById('presentations-loading')?.remove();
     } catch (error) {
       console.error('Error loading data:', error);
-      // Fallback to show error message
       this.showErrorMessage();
-      // ローディングインジケータを非表示に
       document.getElementById('publications-loading')?.remove();
       document.getElementById('presentations-loading')?.remove();
     }
   }
+
   renderPublications() {
     const container = document.getElementById('publications-container');
     if (!container) return;
@@ -42,51 +42,45 @@ class DataLoader {
             <h4 class="fw-bold mb-0">${pub.title}</h4>
             <span class="badge">${pub.citations} citations</span>
           </div>
-          <p class="mb-0">${pub.authors}</p>
-          ${pub.conference ? `
-            <p class="mb-0" style="color: var(--text-muted)">
-              ${pub.conference}<br>
-              ${pub.location}, ${pub.date}
-            </p>
-          ` : ''}
-          <p class="mb-0" style="color: var(--text-muted)">
+          <h5 class="mb-0">${pub.authors}</h5>
+          <h5 class="mb-0" style="color: var(--text-muted)">
             ${pub.links.map(link => `
-              <a href="${link.url}" target="_blank">
+              <a href="${link.url}" target="_blank" class="link-item" title="Access ${link.type}">
                 <i class="ai ai-${link.type}"></i> ${link.text}
               </a>
-            `).join('\n            ')}
-          </p>
+            `).join(' ')}
+          </h5>
         </div>
       `;
     });
     container.innerHTML = html;
   }
+
   renderPresentations() {
     const container = document.getElementById('presentations-container');
     if (!container) return;
-
     let html = '';
     this.presentations.forEach(pres => {
       const pdfLink = pres.url ?
         `<a href="${pres.url}" target="_blank" class="pdf-link" title="View PDF" style="margin-left: 0.5rem; color: var(--text-muted); font-size: 1.5rem;">
-        <i class="fa-solid fa-file-pdf"></i>
+          <i class="fa-solid fa-file-pdf"></i>
         </a>` : '';
       html += `
-      <div class="card-item links">
-        <div class="card-item-header">
-          <h4 class="fw-bold mb-0">${pres.title} ${pdfLink}</h4>
-          <span class="badge">${pres.type}</span>
+        <div class="card-item links">
+          <div class="card-item-header">
+            <h4 class="fw-bold mb-0">${pres.title} ${pdfLink}</h4>
+            <span class="badge">${pres.type}</span>
+          </div>
+          <h5 class="mb-0">${pres.author}</h5>
+          <h5 class="mb-0" style="color: var(--text-muted)">
+            ${pres.event}, ${pres.location}, ${pres.date}
+          </h5>
         </div>
-        <p class="mb-0">${pres.author}</p>
-        <p class="mb-0" style="color: var(--text-muted)">
-          ${pres.event} <br>
-          ${pres.location}, ${pres.date}
-        </p>
-      </div>
-    `;
+      `;
     });
     container.innerHTML = html;
   }
+
   showErrorMessage() {
     const containers = [
       document.getElementById('publications-container'),
@@ -105,8 +99,14 @@ class DataLoader {
   }
 }
 
+// Global variable for access from HTML
+let dataLoader;
+
 // Initialize data loader when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-  const dataLoader = new DataLoader();
+  dataLoader = new EnhancedDataLoader();
   dataLoader.loadData();
 });
+
+// Inject styles
+document.head.insertAdjacentHTML('beforeend', styles);

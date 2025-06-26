@@ -1,0 +1,199 @@
+name: Update Publications Citations
+
+on:
+  # 毎月1日の午前2時（UTC）に実行
+  schedule:
+    - cron: '0 2 1 * *'
+  # 手動実行も可能
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run mode (no commit)'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+        - 'true'
+        - 'false'
+
+jobs:
+  update-citations:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120  # 2時間のタイムアウト
+
+    permissions:
+      contents: write  # リポジトリへの書き込み権限
+      pull-requests: write  # PR作成権限（オプション）
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # 完全な履歴を取得
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests
+
+    - name: Verify files exist
+      run: |
+        if [ ! -f "scripts/citation_updater.py" ]; then
+          echo "Error: citation_updater.py not found"
+          exit 1
+        fi
+        if [ ! -f "assets/data/publications.json" ]; then
+          echo "Error: publications.json not found"
+          exit 1
+        fi
+        echo "Required files verified"
+
+    - name: Create backup
+      run: |
+        mkdir -p backups
+        cp assets/data/publications.json backups/publications_backup_$(date +%Y%m%d_%H%M%S).json
+        echo "Backup created: backups/publications_backup_$(date +%Y%m%d_%H%M%S).json"
+
+    - name: Run citation updater
+      id: update
+      run: |
+        echo "Starting citation update..."
+        cd scripts
+        python citation_updater.py > ../update_log.txt 2>&1
+
+        # 実行結果をチェック
+        if [ $? -eq 0 ]; then
+          echo "update_success=true" >> $GITHUB_OUTPUT
+          echo "Citation update completed successfully"
+        else
+          echo "update_success=false" >> $GITHUB_OUTPUT
+          echo "Citation update failed"
+          cat ../update_log.txt
+          exit 1
+        fi
+
+    - name: Check for changes
+      id: changes
+      run: |
+        if git diff --quiet assets/data/publications.json; then
+          echo "has_changes=false" >> $GITHUB_OUTPUT
+          echo "No changes detected in publications.json"
+        else
+          echo "has_changes=true" >> $GITHUB_OUTPUT
+          echo "Changes detected in publications.json"
+
+          # 変更の概要を生成
+          echo "## Changes Summary" > changes_summary.md
+          echo "- File: assets/data/publications.json" >> changes_summary.md
+          echo "- Date: $(date)" >> changes_summary.md
+          echo "- Lines changed: $(git diff --numstat assets/data/publications.json | cut -f1,2)" >> changes_summary.md
+          echo "" >> changes_summary.md
+          echo "### Update Log:" >> changes_summary.md
+          echo '```' >> changes_summary.md
+          tail -20 update_log.txt >> changes_summary.md
+          echo '```' >> changes_summary.md
+        fi
+
+    - name: Configure Git
+      if: steps.changes.outputs.has_changes == 'true' && github.event.inputs.dry_run != 'true'
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+
+    - name: Commit changes
+      if: steps.changes.outputs.has_changes == 'true' && github.event.inputs.dry_run != 'true'
+      run: |
+        git add assets/data/publications.json
+
+        # コミットメッセージの生成
+        COMMIT_MSG="🤖 Auto-update: Publications citations ($(date +%Y-%m-%d))"
+
+        # 更新統計を追加
+        if grep -q "Updated:" update_log.txt; then
+          UPDATED_COUNT=$(grep -c "Updated:" update_log.txt)
+          COMMIT_MSG="$COMMIT_MSG - Updated $UPDATED_COUNT publications"
+        fi
+
+        git commit -m "$COMMIT_MSG" -m "$(cat changes_summary.md)"
+
+        echo "Changes committed successfully"
+
+    - name: Push changes
+      if: steps.changes.outputs.has_changes == 'true' && github.event.inputs.dry_run != 'true'
+      run: |
+        git push origin main
+        echo "Changes pushed to main branch"
+
+    - name: Upload artifacts
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: citation-update-logs-${{ github.run_number }}
+        path: |
+          update_log.txt
+          changes_summary.md
+          backups/
+        retention-days: 30
+
+    - name: Create issue on failure
+      if: failure()
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          let logContent = '';
+          try {
+            logContent = fs.readFileSync('update_log.txt', 'utf8');
+          } catch (error) {
+            logContent = 'Log file not available';
+          }
+
+          const issueBody = `
+          ## 🚨 Citation Update Failed
+
+          The scheduled citation update failed on ${new Date().toISOString()}.
+
+          ### Error Details:
+          \`\`\`
+          ${logContent.slice(-2000)} // 最後の2000文字
+          \`\`\`
+
+          ### Action Required:
+          - [ ] Check the error logs
+          - [ ] Verify INSPIRE-HEP API availability
+          - [ ] Check publications.json format
+          - [ ] Re-run manually if needed
+
+          **Workflow Run:** [#${{ github.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+          `;
+
+          await github.rest.issues.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title: `Citation Update Failed - ${new Date().toDateString()}`,
+            body: issueBody,
+            labels: ['automation', 'bug']
+          });
+
+    - name: Summary
+      if: always()
+      run: |
+        echo "## Citation Update Summary" >> $GITHUB_STEP_SUMMARY
+        echo "- **Status**: ${{ steps.update.outputs.update_success == 'true' && '✅ Success' || '❌ Failed' }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Changes**: ${{ steps.changes.outputs.has_changes == 'true' && '📝 Changes detected and committed' || '📋 No changes' }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Dry Run**: ${{ github.event.inputs.dry_run == 'true' && '🧪 Yes (no commit)' || '🚀 No (live run)' }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Timestamp**: $(date)" >> $GITHUB_STEP_SUMMARY
+
+        if [ -f "update_log.txt" ]; then
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Update Log (Last 10 lines):" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          tail -10 update_log.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+        fi
