@@ -121,7 +121,7 @@ NAVIGATION STYLES
 LINKS STYLES
 ============================================================================= */
 .links a {
-  font-size: 1rem;
+  font-size: 1.2rem;
   display: inline-block;
   color: var(--text-muted);
   transition: all 0.3s ease;
