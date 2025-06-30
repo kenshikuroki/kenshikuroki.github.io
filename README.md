@@ -1,9 +1,10 @@
 # Kenshi KUROKI - Personal Academic Website
+---
 
 ## 🌟 Features
 - **Automated Citation Management**: Monthly auto-updates via INSPIRE-HEP database integration
 - **Responsive Design**: Mobile-optimized using Bootstrap 5.3.0
-- **SEO Optimized**: Schema.org structured data and Jekyll auto-generated sitemaps
+- **SEO Optimized**: Schema.org structured data and sitemap
 - **Dynamic Content**: Asynchronous data loading with JavaScript
 
 
@@ -11,7 +12,6 @@
 - **Frontend**: HTML5, CSS3, JavaScript (ES6+)
 - **Framework**: Bootstrap 5.3.0
 - **Icons**: Font Awesome 6.7.2, Academicons
-- **Static Site Generator**: Jekyll
 - **Automation**: GitHub Actions
 - **Hosting**: GitHub Pages
 
@@ -19,7 +19,6 @@
 ## 📁 Project Structure
 ```
 ├── index.html                          # Main page
-├── _config.yml                         # Jekyll configuration
 ├── assets/
 │   ├── css/style.css                   # Custom styles
 │   ├── js/
@@ -28,12 +27,17 @@
 │   ├── data/
 │   │   ├── publications.json           # Publications data
 │   │   └── presentations.json          # Presentations data
-│   ├── images/profile.jpg              # Profile image
-│   └── documents/CV_kuroki.pdf         # Curriculum Vitae
+│   ├── documents/
+│   │   └── CV_kuroki.pdf               # Curriculum Vitae
+│   └── images/
+│       └── profile.jpg                 # Profile image
 ├── .github/workflows/
 │   └── update-citations.yml            # Automated citation updates
+│   └── update-sitemap.yml              # Automated sitemap generation
 ├── scripts/
 │   └── citation_updater.py             # Python citation update script
+│   └── generate_sitemap.py             # Python sitemap generation script
+├── sitemap.xml                         # Automatically generated sitemap
 └── robots.txt                          # SEO configuration
 ```
 
@@ -42,10 +46,17 @@
 
 ### Citation Management System
 Automated citation update system running monthly:
+- Uses `scripts/citation_updater.py` to fetch and update citations
 - Fetches latest citation counts from INSPIRE-HEP API
 - Comprehensive search strategies (ID, arXiv, DOI, title)
 - Automatic backup and error handling
 - GitHub Issues notifications for failures
+
+### Sitemap Generation
+Automatically generates `sitemap.xml`:
+- Uses `scripts/generate_sitemap.py` for generation
+- Includes pages and data files
+- Updates on every push to the repository
 
 
 ## 🚀 Updates
@@ -71,21 +82,18 @@ Add new presentations to `assets/data/presentations.json`:
   "type": "Invited Talk",
   "location": "Location",
   "date": "2025-01-01",
-  "url": "https://example.com/presentation"
+  "url": "URL to Presentation Slides (if available)"
 }
 ```
-### Updating Personal Information
-Edit the following sections in `index.html`:
-- Schema.org structured data (lines 18-58)
-- Profile information (lines 110-156)
-- Career and education information (lines 194-304)
 
 
 ## 📄 License
 This project is for personal use. Please contact before reusing code.
 
+
 ## 📞 Contact
-- **Email**: k-kuroki@impcas.ac.cn
+- **Email**: k-kuroki-e23@eagle.sophia.ac.jp
+
 
 ---
 
