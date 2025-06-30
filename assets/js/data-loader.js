@@ -107,6 +107,3 @@ document.addEventListener('DOMContentLoaded', () => {
   dataLoader = new EnhancedDataLoader();
   dataLoader.loadData();
 });
-
-// Inject styles
-document.head.insertAdjacentHTML('beforeend', styles);
