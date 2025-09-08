@@ -48,17 +48,17 @@ class EnhancedDataLoader {
       html += `
         <div class="card-item links">
           <div class="card-item-header">
-            <h4 class="fw-bold mb-0">${pub.title}</h4>
+            <h5 class="fw mb-0">${pub.title}</h5>
             <span class="badge">${pub.citations} citations</span>
           </div>
-          <h5 class="mb-0">${pub.authors}</h5>
-          <h5 class="mb-0" style="color: var(--text-muted)">
+          <h6 class="mb-0">${pub.authors}</h6>
+          <h6 class="mb-0" style="color: var(--text-muted)">
             ${pub.links.map(link => `
-              <a href="${link.url}" target="_blank" class="link-item" title="Access ${link.type}">
+              <a href="${link.url}" target="_blank" class="link-item" title="Access ${link.type}" style="font-size: medium;">
                 <i class="ai ai-${link.type}"></i> ${link.text}
               </a>
             `).join(' ')}
-          </h5>
+          </h6>
         </div>
       `;
     });
@@ -76,18 +76,18 @@ class EnhancedDataLoader {
         </a>` : '';
       // イベント名をリンク化
       const eventHtml = pres.event_url && pres.event_url.trim() !== "" ?
-        `<a href="${pres.event_url}" target="_blank" class="event-link" title="Event Website">${pres.event}</a>` :
+        `<a href="${pres.event_url}" target="_blank" class="event-link" title="Event Website" style="font-size: medium">${pres.event}</a>` :
         pres.event;
       html += `
         <div class="card-item links">
           <div class="card-item-header">
-            <h4 class="fw-bold mb-0">${pres.title} ${pdfLink}</h4>
+            <h5 class="fw mb-0">${pres.title} ${pdfLink}</h5>
             <span class="badge">${pres.type}</span>
           </div>
-          <h5 class="mb-0">${pres.author}</h5>
-          <h5 class="mb-0" style="color: var(--text-muted)">
+          <h6 class="mb-0">${pres.author}</h6>
+          <h6 class="mb-0" style="color: var(--text-muted)">
             ${eventHtml}, ${pres.location}, ${pres.date}
-          </h5>
+          </h6>
         </div>
       `;
     });
