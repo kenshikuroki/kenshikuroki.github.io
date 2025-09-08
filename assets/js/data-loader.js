@@ -74,6 +74,10 @@ class EnhancedDataLoader {
         `<a href="${pres.url}" target="_blank" class="pdf-link" title="View PDF" style="margin-left: 0.5rem; color: var(--text-muted); font-size: 1.5rem;">
           <i class="fa-solid fa-file-pdf"></i>
         </a>` : '';
+      // イベント名をリンク化
+      const eventHtml = pres.event_url && pres.event_url.trim() !== "" ?
+        `<a href="${pres.event_url}" target="_blank" class="event-link" title="Event Website">${pres.event}</a>` :
+        pres.event;
       html += `
         <div class="card-item links">
           <div class="card-item-header">
@@ -82,7 +86,7 @@ class EnhancedDataLoader {
           </div>
           <h5 class="mb-0">${pres.author}</h5>
           <h5 class="mb-0" style="color: var(--text-muted)">
-            ${pres.event}, ${pres.location}, ${pres.date}
+            ${eventHtml}, ${pres.location}, ${pres.date}
           </h5>
         </div>
       `;
