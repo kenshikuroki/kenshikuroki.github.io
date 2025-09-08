@@ -23,6 +23,15 @@ class EnhancedDataLoader {
       // Remove loading indicators
       document.getElementById('publications-loading')?.remove();
       document.getElementById('presentations-loading')?.remove();
+      // ✅ KaTeXで再レンダリング
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ]
+        });
+      }
     } catch (error) {
       console.error('Error loading data:', error);
       this.showErrorMessage();
