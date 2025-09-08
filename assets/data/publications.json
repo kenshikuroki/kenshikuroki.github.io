@@ -1,5 +1,19 @@
 [
   {
+    "title": "Tensor-polarized twist-3 parton distribution functions $f_{LT}(x)$ for the spin-1 deuteron by using twist-2 relations",
+    "authors": "S. Kumano and K. Kuroki",
+    "inspire_id": "2966917",
+    "links": [
+      {
+        "type": "arxiv",
+        "text": "arXiv:2509.05046",
+        "url": "https://arxiv.org/abs/2509.05046"
+      }
+    ],
+    "citations": 0,
+    "last_updated": "2025-09-08 12:30:00"
+  },
+  {
     "title": "p–φ femtoscopic correlation analysis using a dynamical model",
     "authors": "K. Kuroki and T. Hirano",
     "inspire_id": "2836760",
