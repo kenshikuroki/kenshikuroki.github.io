@@ -44,7 +44,14 @@ class EnhancedDataLoader {
     const container = document.getElementById('publications-container');
     if (!container) return;
     let html = '';
+    const linkPriority = { doi: 0, arxiv: 1 };
     this.publications.forEach(pub => {
+      // Keep source data untouched and only normalize display order.
+      const sortedLinks = [...(pub.links || [])].sort((a, b) => {
+        const aPriority = linkPriority[a.type] ?? Number.MAX_SAFE_INTEGER;
+        const bPriority = linkPriority[b.type] ?? Number.MAX_SAFE_INTEGER;
+        return aPriority - bPriority;
+      });
       html += `
         <div class="card-item links">
           <div class="card-item-header">
@@ -53,7 +60,7 @@ class EnhancedDataLoader {
           </div>
           <h6 class="mb-0">${pub.authors}</h6>
           <h6 class="mb-0" style="color: var(--text-muted)">
-            ${pub.links.map(link => `
+            ${sortedLinks.map(link => `
               <a href="${link.url}" target="_blank" class="link-item" title="Access ${link.type}" style="font-size: medium;">
                 <i class="ai ai-${link.type}"></i> ${link.text}
               </a>
