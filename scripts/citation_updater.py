@@ -201,8 +201,8 @@ class EnhancedCitationUpdater:
   def merge_metadata(self, current_pub: Dict, inspire_data: Dict) -> Dict:
     """現在の出版物データとINSPIRE-HEP データをマージ"""
     updated_pub = current_pub.copy()
-    # 常に更新する項目
-    always_update = ['citations', 'last_updated']
+    # 常に更新する項目（last_updatedは変更があった場合のみ更新するためここには含めない）
+    always_update = ['citations']
     # 空の場合のみ更新する項目
     update_if_empty = ['title', 'authors', 'inspire_id']
     # リンク情報の更新
@@ -279,8 +279,9 @@ class EnhancedCitationUpdater:
           new_val = updated_pub.get(key, '')
           if old_val != new_val and new_val:
             changes.append(f"{key}: updated")
-        publications[i] = updated_pub
         if changes:
+          updated_pub['last_updated'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+          publications[i] = updated_pub
           print(f"  ✅ Updated: {', '.join(changes)}")
           updated_count += 1
         else:
@@ -299,6 +300,7 @@ class EnhancedCitationUpdater:
       print(f"📊 Updated: {updated_count} publications")
       print(f"❌ Failed: {failed_count} publications")
       print(f"📄 File saved: {self.json_path}")
+      print(f"CITATION_UPDATED_COUNT={updated_count}")
       return True
     except Exception as e:
       print(f"Failed to save JSON file: {e}")

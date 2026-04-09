@@ -107,8 +107,8 @@ jobs:
         # コミットメッセージの生成
         COMMIT_MSG="🤖 Auto-update: Publications citations ($(date +%Y-%m-%d))"
         # 更新統計を追加
-        if grep -q "Updated:" assets/data/log/update_log.txt; then
-          UPDATED_COUNT=$(grep -c "Updated:" assets/data/log/update_log.txt)
+        if grep -q "CITATION_UPDATED_COUNT=" assets/data/log/update_log.txt; then
+          UPDATED_COUNT=$(grep "CITATION_UPDATED_COUNT=" assets/data/log/update_log.txt | cut -d= -f2)
           COMMIT_MSG="$COMMIT_MSG - Updated $UPDATED_COUNT publications"
         fi
         git commit -m "$COMMIT_MSG" -m "$(cat changes_summary.md)"
