@@ -61,7 +61,7 @@ class EnhancedDataLoader {
           <h6 class="mb-0">${pub.authors}</h6>
           <h6 class="mb-0" style="color: var(--text-muted)">
             ${sortedLinks.map(link => `
-              <a href="${link.url}" target="_blank" class="link-item" title="Access ${link.type}" style="font-size: medium;">
+              <a href="${link.url}" target="_blank" class="link-item" title="Access ${link.type}" style="font-size: medium; white-space: nowrap;">
                 <i class="ai ai-${link.type}"></i> ${link.text}
               </a>
             `).join('<span style="white-space:nowrap">, </span>')}
