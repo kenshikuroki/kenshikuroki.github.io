@@ -93,7 +93,7 @@ class EnhancedDataLoader {
           </div>
           <h6 class="mb-0">${pres.author}</h6>
           <h6 class="mb-0" style="color: var(--text-muted)">
-            ${eventHtml}, ${pres.location}, ${pres.date}
+            <span style="white-space: nowrap">${eventHtml},</span> <span style="white-space: nowrap">${pres.location},</span> <span style="white-space: nowrap">${pres.date}</span>
           </h6>
         </div>
       `;
