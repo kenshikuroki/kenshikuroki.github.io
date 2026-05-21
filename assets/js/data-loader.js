@@ -64,7 +64,7 @@ class EnhancedDataLoader {
               <a href="${link.url}" target="_blank" class="link-item" title="Access ${link.type}" style="font-size: medium;">
                 <i class="ai ai-${link.type}"></i> ${link.text}
               </a>
-            `).join(' ')}
+            `).join('<span style="white-space:nowrap">, </span>')}
           </h6>
         </div>
       `;
