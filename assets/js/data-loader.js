@@ -85,6 +85,7 @@ class EnhancedDataLoader {
       const eventHtml = pres.event_url && pres.event_url.trim() !== "" ?
         `<a href="${pres.event_url}" target="_blank" class="event-link" title="Event Website" style="font-size: medium">${pres.event}</a>` :
         pres.event;
+      // Word Joiner (&#8288;) をカンマ直前に挿入し、カンマが行頭に来るのを防ぐ
       html += `
         <div class="card-item links">
           <div class="card-item-header">
@@ -93,7 +94,7 @@ class EnhancedDataLoader {
           </div>
           <h6 class="mb-0">${pres.author}</h6>
           <h6 class="mb-0" style="color: var(--text-muted)">
-            <span style="white-space: nowrap">${eventHtml},</span> <span style="white-space: nowrap">${pres.location},</span> <span style="white-space: nowrap">${pres.date}</span>
+            ${eventHtml}&#8288;, ${pres.location}&#8288;, ${pres.date}
           </h6>
         </div>
       `;
