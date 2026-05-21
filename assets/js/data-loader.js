@@ -61,10 +61,10 @@ class EnhancedDataLoader {
           <h6 class="mb-0">${pub.authors}</h6>
           <h6 class="mb-0" style="color: var(--text-muted)">
             ${sortedLinks.map(link => `
-              <a href="${link.url}" target="_blank" class="link-item" title="Access ${link.type}" style="font-size: medium; white-space: nowrap;">
+              <a href="${link.url}" target="_blank" class="link-item" title="Access ${link.type}" style="font-size: medium;">
                 <i class="ai ai-${link.type}"></i> ${link.text}
               </a>
-            `).join('<span style="white-space:nowrap">, </span>')}
+            `).join('<br>')}
           </h6>
         </div>
       `;
@@ -94,7 +94,7 @@ class EnhancedDataLoader {
           </div>
           <h6 class="mb-0">${pres.author}</h6>
           <h6 class="mb-0" style="color: var(--text-muted)">
-            ${eventHtml}&#8288;, ${pres.location}&#8288;, ${pres.date}
+            ${eventHtml}<br>${pres.location}&#8288;, ${pres.date}
           </h6>
         </div>
       `;
