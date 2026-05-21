@@ -120,15 +120,19 @@ NAVIGATION STYLES
 /* =============================================================================
 LINKS STYLES
 ============================================================================= */
+/* display:inline にすることで Word Joiner (&#8288;) がカンマ前で正しく機能し、
+   行頭にカンマが来るのを防ぐ。ホバー時の浮き上がり効果は top で代替。 */
 .links a {
   font-size: 1.2rem;
-  display: inline-block;
+  display: inline;
+  position: relative;
+  top: 0;
   color: var(--text-muted);
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, top 0.3s ease;
 }
 .links a:hover {
   color: var(--accent-color) !important;
-  transform: translateY(-3px);
+  top: -3px;
 }
 
 /* =============================================================================
