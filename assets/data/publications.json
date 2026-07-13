@@ -1,5 +1,19 @@
 [
   {
+    "title": "Tensor-polarized parton distribution functions of the deuteron by a convolution model",
+    "authors": "S. Kumano and K. Kuroki",
+    "inspire_id": "3179588",
+    "links": [
+      {
+        "type": "arxiv",
+        "text": "arXiv:2607.09237",
+        "url": "https://arxiv.org/abs/2607.09237"
+      }
+    ],
+    "citations": 0,
+    "last_updated": "2026-07-13 17:14:23"
+  },
+  {
     "title": "Twist-2 relations for the twist-3 tensor-polarized distribution function $f_{LT}$ of a spin-1 hadron by the operator-product-expansion method",
     "authors": "S. Kumano and K. Kuroki",
     "inspire_id": "3150812",
@@ -10,8 +24,8 @@
         "url": "https://arxiv.org/abs/2605.00430"
       }
     ],
-    "citations": 0,
-    "last_updated": "2026-05-05 15:28:49"
+    "citations": 1,
+    "last_updated": "2026-07-13 17:14:23"
   },
   {
     "title": "Tensor-polarized twist-3 parton distribution functions $f_{LT}(x)$ for the spin-1 deuteron by using twist-2 relations",
@@ -29,8 +43,8 @@
         "url": "https://doi.org/10.1016/j.physletb.2026.140348"
       }
     ],
-    "citations": 5,
-    "last_updated": "2026-05-05 15:28:49"
+    "citations": 6,
+    "last_updated": "2026-07-13 17:14:23"
   },
   {
     "title": "p–$\\phi$ femtoscopic correlation analysis using a dynamical model",
