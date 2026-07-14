@@ -22,10 +22,15 @@
         "type": "arxiv",
         "text": "arXiv:2605.00430",
         "url": "https://arxiv.org/abs/2605.00430"
+      },
+      {
+        "type": "doi",
+        "text": "Phys.Lett.B 880, 140741 (2026)",
+        "url": "https://doi.org/10.1016/j.physletb.2026.140741"
       }
     ],
     "citations": 1,
-    "last_updated": "2026-07-13 17:14:23"
+    "last_updated": "2026-07-14 09:31:42"
   },
   {
     "title": "Tensor-polarized twist-3 parton distribution functions $f_{LT}(x)$ for the spin-1 deuteron by using twist-2 relations",
