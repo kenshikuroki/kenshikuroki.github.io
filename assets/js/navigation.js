@@ -15,11 +15,15 @@ class NavigationManager {
     };
     this.navLinks = null;
     this.sections = null;
+    this.sectionMetrics = [];
     this.header = null;
     this.isInitialized = false;
+    this.scrollHandler = null;
+    this.resizeHandler = null;
     // メソッドのバインド
     this.handleScroll = this.handleScroll.bind(this);
     this.handleNavClick = this.handleNavClick.bind(this);
+    this.refreshSectionMetrics = this.refreshSectionMetrics.bind(this);
   }
   /**
   * 初期化
@@ -40,6 +44,7 @@ class NavigationManager {
       console.warn('No sections found');
       return;
     }
+    this.refreshSectionMetrics();
     this.attachEventListeners();
     this.updateActiveLink(); // 初期状態の設定
     this.isInitialized = true;
@@ -50,7 +55,7 @@ class NavigationManager {
   attachEventListeners() {
     // スクロールイベント（パフォーマンス最適化のためthrottle）
     let ticking = false;
-    window.addEventListener('scroll', () => {
+    this.scrollHandler = () => {
       if (!ticking) {
         requestAnimationFrame(() => {
           this.handleScroll();
@@ -58,11 +63,25 @@ class NavigationManager {
         });
         ticking = true;
       }
-    });
+    };
+    window.addEventListener('scroll', this.scrollHandler, { passive: true });
+    this.resizeHandler = () => {
+      this.refreshSectionMetrics();
+      this.handleScroll();
+    };
+    window.addEventListener('resize', this.resizeHandler, { passive: true });
     // ナビゲーションクリックイベント
     this.navLinks.forEach(link => {
       link.addEventListener('click', this.handleNavClick);
     });
+  }
+
+  refreshSectionMetrics() {
+    this.sectionMetrics = Array.from(this.sections || []).map(section => ({
+      id: section.getAttribute('id'),
+      top: section.offsetTop,
+      bottom: section.offsetTop + section.offsetHeight
+    }));
   }
   /**
    * スクロールハンドラー
@@ -76,19 +95,18 @@ class NavigationManager {
   updateActiveLink() {
     const scrollPos = window.scrollY + this.config.scrollOffset;
     let currentSection = '';
-    // 現在表示されているセクションを特定
-    this.sections.forEach(section => {
-      const sectionTop = section.offsetTop;
-      const sectionHeight = section.offsetHeight;
-      if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
-        currentSection = section.getAttribute('id');
+    // 現在表示されているセクションをキャッシュ済み位置から特定
+    for (const section of this.sectionMetrics) {
+      if (scrollPos >= section.top && scrollPos < section.bottom) {
+        currentSection = section.id;
+        break;
       }
-    });
+    }
     // ページ下部の場合、最後のセクションをアクティブに
-    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 10) {
-      const lastSection = this.sections[this.sections.length - 1];
+    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 10) {
+      const lastSection = this.sectionMetrics[this.sectionMetrics.length - 1];
       if (lastSection) {
-        currentSection = lastSection.getAttribute('id');
+        currentSection = lastSection.id;
       }
     }
     // アクティブクラスの更新
@@ -140,7 +158,14 @@ class NavigationManager {
     if (!this.isInitialized) {
       return;
     }
-    window.removeEventListener('scroll', this.handleScroll);
+    if (this.scrollHandler) {
+      window.removeEventListener('scroll', this.scrollHandler);
+      this.scrollHandler = null;
+    }
+    if (this.resizeHandler) {
+      window.removeEventListener('resize', this.resizeHandler);
+      this.resizeHandler = null;
+    }
     if (this.navLinks) {
       this.navLinks.forEach(link => {
         link.removeEventListener('click', this.handleNavClick);
@@ -152,6 +177,13 @@ class NavigationManager {
 
 // DOMContentLoaded時の自動初期化
 document.addEventListener('DOMContentLoaded', () => {
+  // target="_blank" のリンクに tabnabbing 対策を付与する
+  document.querySelectorAll('a[target="_blank"]').forEach(link => {
+    const relTokens = new Set((link.getAttribute('rel') || '').split(/\s+/).filter(Boolean));
+    relTokens.add('noopener');
+    relTokens.add('noreferrer');
+    link.setAttribute('rel', Array.from(relTokens).join(' '));
+  });
   // グローバルインスタンスの作成
   window.navigationManager = new NavigationManager();
   window.navigationManager.init();

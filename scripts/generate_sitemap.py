@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import os
 import datetime
 from pathlib import Path
 import xml.etree.ElementTree as ET
@@ -9,14 +8,16 @@ class SitemapGenerator:
   def __init__(self, base_url="https://kenshikuroki.github.io"):
     self.base_url = base_url
     self.urls = []
-    # Set working directory to repository root
-    self.repo_root = Path(__file__).parent.parent if __file__ else Path.cwd()
-    os.chdir(self.repo_root)
+    self.repo_root = Path(__file__).resolve().parent.parent
+
+  def repo_path(self, relative_path):
+    return self.repo_root / relative_path
 
   def add_url(self, loc, lastmod=None, changefreq="monthly", priority="0.5"):
     """Add URL to sitemap"""
+    normalized_loc = loc if loc.startswith('/') else f'/{loc}'
     url_data = {
-      'loc': f"{self.base_url}{loc}",
+      'loc': f"{self.base_url}{normalized_loc}",
       'lastmod': lastmod or datetime.datetime.now().strftime('%Y-%m-%d'),
       'changefreq': changefreq,
       'priority': priority
@@ -25,34 +26,32 @@ class SitemapGenerator:
 
   def get_file_modification_date(self, filepath):
     """Get file modification date in YYYY-MM-DD format"""
-    if os.path.exists(filepath):
-      timestamp = os.path.getmtime(filepath)
+    file_path = self.repo_path(filepath)
+    if file_path.exists():
+      timestamp = file_path.stat().st_mtime
       return datetime.datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d')
     return datetime.datetime.now().strftime('%Y-%m-%d')
 
   def scan_important_files(self):
     """Scan and add important files to sitemap"""
+    self.urls = []
     # Main page
     index_lastmod = self.get_file_modification_date('index.html')
     self.add_url('/', index_lastmod, 'monthly', '1.0')
-    # CV and documents
-    cv_path = 'assets/documents/CV_kuroki.pdf'
-    if os.path.exists(cv_path):
-      cv_lastmod = self.get_file_modification_date(cv_path)
-      self.add_url('/assets/documents/CV_kuroki.pdf', cv_lastmod, 'monthly', '0.8')
     # Data files (for SEO if they change frequently)
     data_files = [
       'assets/data/publications.json',
       'assets/data/presentations.json'
     ]
+    newest_lastmod = index_lastmod
     for data_file in data_files:
-      if os.path.exists(data_file):
+      if self.repo_path(data_file).exists():
         lastmod = self.get_file_modification_date(data_file)
         # Don't include JSON files in sitemap as they're not directly accessible
         # But use their modification time to update main page lastmod
-        if lastmod > index_lastmod:
-          # Update main page lastmod if data is newer
-          self.urls[0]['lastmod'] = lastmod
+        if lastmod > newest_lastmod:
+          newest_lastmod = lastmod
+    self.urls[0]['lastmod'] = newest_lastmod
 
   def generate_xml(self):
     """Generate XML sitemap"""
@@ -68,6 +67,8 @@ class SitemapGenerator:
       changefreq_elem.text = url_data['changefreq']
       priority_elem = ET.SubElement(url_elem, 'priority')
       priority_elem.text = url_data['priority']
+    if hasattr(ET, 'indent'):
+      ET.indent(urlset, space='  ')
     return urlset
 
   def save_sitemap(self, filename='sitemap.xml'):
@@ -77,17 +78,8 @@ class SitemapGenerator:
     # Create XML declaration and pretty formatting
     xml_str = '<?xml version="1.0" encoding="UTF-8"?>\n'
     xml_str += ET.tostring(root, encoding='unicode')
-    # Basic pretty formatting
-    xml_str = xml_str.replace('><', '>\n<')
-    xml_str = xml_str.replace('<url>', '  <url>')
-    xml_str = xml_str.replace('</url>', '  </url>')
-    xml_str = xml_str.replace('<loc>', '    <loc>')
-    xml_str = xml_str.replace('<lastmod>', '    <lastmod>')
-    xml_str = xml_str.replace('<changefreq>', '    <changefreq>')
-    xml_str = xml_str.replace('<priority>', '    <priority>')
     # Save to repository root directory
-    repo_root = Path(__file__).parent.parent
-    sitemap_path = repo_root / filename
+    sitemap_path = self.repo_path(filename)
     with open(sitemap_path, 'w', encoding='utf-8') as f:
       f.write(xml_str)
     print(f"Sitemap generated: {sitemap_path}")

@@ -5,6 +5,44 @@ class EnhancedDataLoader {
     this.presentations = [];
   }
 
+  escapeHtml(value) {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  safeUrl(value) {
+    if (typeof value !== 'string' || value.trim() === '') {
+      return null;
+    }
+    try {
+      const parsedUrl = new URL(value, window.location.href);
+      return ['http:', 'https:'].includes(parsedUrl.protocol) ? parsedUrl.href : null;
+    } catch {
+      return null;
+    }
+  }
+
+  safeToken(value, fallback = 'link') {
+    const token = String(value ?? '').trim();
+    return /^[a-z0-9_-]+$/i.test(token) ? token : fallback;
+  }
+
+  renderMath(container) {
+    if (typeof renderMathInElement !== 'function' || !container) {
+      return;
+    }
+    renderMathInElement(container, {
+      delimiters: [
+        { left: '$$', right: '$$', display: true },
+        { left: '$', right: '$', display: false }
+      ]
+    });
+  }
+
   async loadData() {
     try {
       // Load publications and presentations data
@@ -23,20 +61,17 @@ class EnhancedDataLoader {
       // Remove loading indicators
       document.getElementById('publications-loading')?.remove();
       document.getElementById('presentations-loading')?.remove();
-      // ✅ KaTeXで再レンダリング
-      if (typeof renderMathInElement === "function") {
-        renderMathInElement(document.body, {
-          delimiters: [
-            { left: "$$", right: "$$", display: true },
-            { left: "$", right: "$", display: false }
-          ]
-        });
-      }
+      this.renderMath(document.getElementById('publications-container'));
+      this.renderMath(document.getElementById('presentations-container'));
+      window.navigationManager?.refreshSectionMetrics?.();
+      window.navigationManager?.handleScroll?.();
     } catch (error) {
       console.error('Error loading data:', error);
       this.showErrorMessage();
       document.getElementById('publications-loading')?.remove();
       document.getElementById('presentations-loading')?.remove();
+      window.navigationManager?.refreshSectionMetrics?.();
+      window.navigationManager?.handleScroll?.();
     }
   }
 
@@ -52,19 +87,30 @@ class EnhancedDataLoader {
         const bPriority = linkPriority[b.type] ?? Number.MAX_SAFE_INTEGER;
         return aPriority - bPriority;
       });
+      const title = this.escapeHtml(pub.title);
+      const authors = this.escapeHtml(pub.authors);
+      const citations = Number.isFinite(pub.citations) ? pub.citations : 0;
       html += `
         <div class="card-item links">
           <div class="card-item-header">
-            <h5 class="fw mb-0">${pub.title}</h5>
-            <span class="badge">${pub.citations} citations</span>
+            <h5 class="fw mb-0">${title}</h5>
+            <span class="badge">${citations} citations</span>
           </div>
-          <h6 class="mb-0">${pub.authors}</h6>
+          <h6 class="mb-0">${authors}</h6>
           <h6 class="mb-0" style="color: var(--text-muted)">
-            ${sortedLinks.map(link => `
-              <a href="${link.url}" target="_blank" class="link-item" title="Access ${link.type}" style="font-size: medium;">
-                <i class="ai ai-${link.type}"></i> ${link.text}
+            ${sortedLinks.map(link => {
+              const safeUrl = this.safeUrl(link.url);
+              if (!safeUrl) {
+                return '';
+              }
+              const linkType = this.safeToken(link.type);
+              const linkText = this.escapeHtml(link.text);
+              return `
+              <a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="link-item" title="Access ${linkType}" style="font-size: medium;">
+                <i class="ai ai-${linkType}"></i> ${linkText}
               </a>
-            `).join('<br>')}
+            `;
+            }).filter(Boolean).join('<br>')}
           </h6>
         </div>
       `;
@@ -77,24 +123,32 @@ class EnhancedDataLoader {
     if (!container) return;
     let html = '';
     this.presentations.forEach(pres => {
-      const pdfLink = pres.url ?
-        `<a href="${pres.url}" target="_blank" class="pdf-link" title="View PDF" style="margin-left: 0.5rem; color: var(--text-muted); font-size: 1.5rem;">
+      const pdfUrl = this.safeUrl(pres.url);
+      const pdfLink = pdfUrl ?
+        `<a href="${pdfUrl}" target="_blank" rel="noopener noreferrer" class="pdf-link" title="View PDF" style="margin-left: 0.5rem; color: var(--text-muted); font-size: 1.5rem;">
           <i class="fa-solid fa-file-pdf"></i>
         </a>` : '';
       // イベント名をリンク化
-      const eventHtml = pres.event_url && pres.event_url.trim() !== "" ?
-        `<a href="${pres.event_url}" target="_blank" class="event-link" title="Event Website" style="font-size: medium">${pres.event}</a>` :
-        pres.event;
+      const eventUrl = this.safeUrl(pres.event_url);
+      const eventText = this.escapeHtml(pres.event);
+      const eventHtml = eventUrl ?
+        `<a href="${eventUrl}" target="_blank" rel="noopener noreferrer" class="event-link" title="Event Website" style="font-size: medium">${eventText}</a>` :
+        eventText;
       // Word Joiner (&#8288;) をカンマ直前に挿入し、カンマが行頭に来るのを防ぐ
+      const title = this.escapeHtml(pres.title);
+      const author = this.escapeHtml(pres.author);
+      const location = this.escapeHtml(pres.location);
+      const date = this.escapeHtml(pres.date);
+      const type = this.escapeHtml(pres.type);
       html += `
         <div class="card-item links">
           <div class="card-item-header">
-            <h5 class="fw mb-0">${pres.title} ${pdfLink}</h5>
-            <span class="badge">${pres.type}</span>
+            <h5 class="fw mb-0">${title} ${pdfLink}</h5>
+            <span class="badge">${type}</span>
           </div>
-          <h6 class="mb-0">${pres.author}</h6>
+          <h6 class="mb-0">${author}</h6>
           <h6 class="mb-0" style="color: var(--text-muted)">
-            ${eventHtml}<br>${pres.location}&#8288;, ${pres.date}
+            ${eventHtml}<br>${location}&#8288;, ${date}
           </h6>
         </div>
       `;

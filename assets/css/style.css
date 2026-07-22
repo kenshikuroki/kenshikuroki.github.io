@@ -3,19 +3,17 @@ CSS VARIABLES & ROOT CONFIGURATION
 ============================================================================= */
 :root {
   /* Primary Colors */
-  --primary-color: #6366f1;
-  --secondary-color: #4f46e5;
-  --accent-color: #8b5cf6;
+  --primary-color: #4f46e5;
+  --secondary-color: #4e46e586;
   /* Background Colors */
   --bg-dark: #0f172a;
   --bg-card: #1e293b;
-  --bg-section: #1a202c;
   /* Text Colors */
-  --text-light: #f1f5f9;
+  --text-light: #f1f5f9f3;
   --text-muted: #94a3b8;
-  /* UI Colors */
-  --border-color: #334155;
-  --highlight: #fbbf24;
+  /* Motion & Elevation */
+  --transition-fast: 0.1s ease;
+  --transition-base: 0.3s ease;
 }
 
 /* =============================================================================
@@ -28,7 +26,7 @@ html {
   scroll-behavior: smooth;
 }
 body {
-  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Roboto';
   line-height: 1.6;
   color: var(--text-light);
   background-color: var(--bg-dark);
@@ -51,7 +49,7 @@ SCROLLBAR CUSTOMIZATION
   width: 8px;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--accent-color);
+  background: var(--secondary-color);
   border-radius: 4px;
 }
 
@@ -59,9 +57,8 @@ SCROLLBAR CUSTOMIZATION
 NAVIGATION STYLES
 ============================================================================= */
 .navbar-custom {
-  background: rgba(15, 23, 42, 0.95) !important;
+  background: var(--bg-dark) !important;
   backdrop-filter: blur(15px);
-  border-bottom: 1px solid var(--border-color);
 }
 .navbar-toggler {
   border: none;
@@ -70,16 +67,24 @@ NAVIGATION STYLES
 .navbar-toggler:focus {
   box-shadow: 0 0 0 0.25rem rgba(139, 92, 246, 0.25);
 }
+.navbar-brand {
+  color: var(--text-light) !important;
+  position: relative;
+  transition: color var(--transition-base);
+}
+.navbar-brand:hover {
+  color: var(--primary-color) !important;
+}
 .navbar-nav .nav-link {
   color: var(--text-light) !important;
-  font-weight: 500;
-  transition: all 0.3s ease;
+  font-weight: 700;
+  transition: color var(--transition-base), background-color var(--transition-base), transform var(--transition-base);
   position: relative;
 }
 .navbar-nav .nav-link:hover,
 .navbar-nav .nav-link.active {
-  color: var(--accent-color) !important;
-  font-weight: 600;
+  color: var(--primary-color) !important;
+  font-weight: 700;
 }
 /* Desktop-only underline animation */
 @media (min-width: 992px) {
@@ -90,8 +95,8 @@ NAVIGATION STYLES
     left: 50%;
     width: 0;
     height: 2px;
-    background: var(--accent-color);
-    transition: all 0.3s ease;
+    background: var(--primary-color);
+    transition: width var(--transition-base);
     transform: translateX(-50%);
   }
   .navbar-nav .nav-link:hover::after,
@@ -100,6 +105,20 @@ NAVIGATION STYLES
   }
   .navbar-nav .nav-link.active::after {
     height: 3px;
+  }
+  .navbar-brand::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -5px;
+    width: 0;
+    height: 2px;
+    background: var(--primary-color);
+    transition: width var(--transition-base);
+    transform: translateX(-50%);
+  }
+  .navbar-brand:hover::after {
+    width: 100%;
   }
 }
 /* Mobile navigation improvements */
@@ -128,22 +147,22 @@ LINKS STYLES
   position: relative;
   top: 0;
   color: var(--text-muted);
-  transition: color 0.3s ease, top 0.3s ease;
+  transition: color var(--transition-base), top var(--transition-base);
 }
 /* Hero section icon links: remove underline */
 .hero-section .links a {
   text-decoration: none;
 }
 .links a:hover {
-  color: var(--accent-color) !important;
-  top: -3px;
+  color: var(--primary-color) !important;
+  top: -2px;
 }
 
 /* =============================================================================
 HERO SECTION STYLES
 ============================================================================= */
 .hero-section {
-  background: linear-gradient(135deg, var(--bg-dark) 0%, var(--secondary-color) 100%);
+  background-color: var(--secondary-color);
   color: var(--text-light);
   padding: 100px 0 50px;
   position: relative;
@@ -153,23 +172,18 @@ HERO SECTION STYLES
   width: 200px;
   height: 200px;
   object-fit: cover;
-  border: 4px solid var(--primary-color);
-  box-shadow: 0 20px 40px rgba(99, 102, 241, 0.3);
+  border: 3px solid var(--primary-color);
 }
 
 /* =============================================================================
 SECTION STYLES
 ============================================================================= */
-.section-dark {
-  background-color: var(--bg-section);
-  border-top: 1px solid var(--border-color);
-}
 .section-title {
   position: relative;
   margin-bottom: 20px;
   color: var(--text-light);
   font-weight: 700;
-  font-size: 2.0rem;
+  font-size: 2rem;
 }
 
 /* =============================================================================
@@ -180,27 +194,25 @@ CARD COMPONENT STYLES
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 20px;
 }
-.card-item {
+
+/* Shared card surface */
+.card-item,
+.card-item-center {
   background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
+  border: 3px solid var(--secondary-color);
+  border-radius: 10px;
   padding: 12px;
   margin-bottom: 8px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease;
+  transition: border-color var(--transition-fast), border-width var(--transition-fast);
   position: relative;
   overflow: hidden;
 }
+.card-item:hover,
+.card-item-center:hover {
+  border-color: var(--primary-color);
+  border-width: 3px;
+}
 .card-item-center {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 12px;
-  margin-bottom: 8px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -231,7 +243,24 @@ BADGE STYLES
 FOOTER STYLES
 ============================================================================= */
 footer {
-  background: var(--bg-dark);
-  border-top: 1px solid var(--border-color);
+  background: var(--secondary-color);
   color: var(--text-light);
+}
+
+/* =============================================================================
+REDUCED MOTION
+============================================================================= */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
