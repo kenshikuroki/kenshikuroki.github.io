@@ -8,6 +8,7 @@ import requests
 import json
 import time
 import shutil
+import sys
 from datetime import datetime
 from pathlib import Path
 import re
@@ -324,6 +325,12 @@ class EnhancedCitationUpdater:
     except Exception as e:
       print(f"Failed to write change summary: {e}")
 
+    total_publications = len(publications)
+    failure_rate = (failed_count / total_publications) if total_publications else 0.0
+    if failure_rate >= 0.5:
+      print(f"High failure rate detected: {failed_count}/{total_publications} ({failure_rate:.1%})")
+      return False
+
     # 更新されたJSONを保存
     try:
       with open(self.json_path, 'w', encoding='utf-8') as f:
@@ -383,6 +390,7 @@ def main():
       print(f"  {key}: {value}")
   else:
     print("\n❌ Update failed. Please check the error messages above.")
+    sys.exit(1)
 
 if __name__ == "__main__":
   main()
