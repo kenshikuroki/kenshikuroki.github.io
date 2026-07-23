@@ -26,7 +26,7 @@ html {
   scroll-behavior: smooth;
 }
 body {
-  font-family: 'Roboto';
+  font-family: 'Roboto', 'Noto Sans JP', 'Helvetica Neue', Arial, sans-serif;
   line-height: 1.6;
   color: var(--text-light);
   background-color: var(--bg-dark);
@@ -156,6 +156,39 @@ LINKS STYLES
 .links a:hover {
   color: var(--primary-color) !important;
   top: -2px;
+}
+
+.hero-subtitle,
+.muted-text {
+  color: var(--text-muted);
+}
+
+.links a.icon-link-xxxl {
+  font-size: xxx-large;
+}
+
+.links a.text-link-light {
+  color: var(--text-light);
+}
+
+.links a.text-link-medium {
+  font-size: medium;
+}
+
+.publication-links-text,
+.presentation-meta-text {
+  color: var(--text-muted);
+}
+
+.links a.publication-link-inline,
+.links a.event-link-inline {
+  font-size: medium;
+}
+
+.pdf-link-inline {
+  margin-left: 0.5rem;
+  color: var(--text-muted);
+  font-size: 1.5rem;
 }
 
 /* =============================================================================

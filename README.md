@@ -44,6 +44,12 @@
 
 ## 🤖 Automation System
 
+### Repository Access Policy
+
+- Use SSH remote URLs for this repository (recommended for workflow file updates).
+- HTTPS + PAT can be used only when the token has `workflow` scope.
+- If push fails while editing `.github/workflows/*.yml`, verify the protocol first with `git remote -v`.
+
 ### Citation Management System
 
 Automated citation update system running monthly:
@@ -104,6 +110,13 @@ This project is for personal use. Please contact before reusing code.
 ## 📞 Contact
 
 - **Email**: [k-kuroki-e23@eagle.sophia.ac.jp](mailto:k-kuroki-e23@eagle.sophia.ac.jp)
+
+
+## 🧪 SEO Validation Checklist
+
+- Validate structured data in [Google Rich Results Test](https://search.google.com/test/rich-results).
+- Validate [sitemap.xml](sitemap.xml) after major content updates.
+- Ensure [robots.txt](robots.txt) points to the latest sitemap URL.
 
 
 ---

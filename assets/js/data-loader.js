@@ -97,7 +97,7 @@ class EnhancedDataLoader {
             <span class="badge">${citations} citations</span>
           </div>
           <h6 class="mb-0">${authors}</h6>
-          <h6 class="mb-0" style="color: var(--text-muted)">
+          <h6 class="mb-0 publication-links-text">
             ${sortedLinks.map(link => {
               const safeUrl = this.safeUrl(link.url);
               if (!safeUrl) {
@@ -106,7 +106,7 @@ class EnhancedDataLoader {
               const linkType = this.safeToken(link.type);
               const linkText = this.escapeHtml(link.text);
               return `
-              <a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="link-item" title="Access ${linkType}" style="font-size: medium;">
+              <a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="link-item publication-link-inline" title="Access ${linkType}">
                 <i class="ai ai-${linkType}"></i> ${linkText}
               </a>
             `;
@@ -125,14 +125,14 @@ class EnhancedDataLoader {
     this.presentations.forEach(pres => {
       const pdfUrl = this.safeUrl(pres.url);
       const pdfLink = pdfUrl ?
-        `<a href="${pdfUrl}" target="_blank" rel="noopener noreferrer" class="pdf-link" title="View PDF" style="margin-left: 0.5rem; color: var(--text-muted); font-size: 1.5rem;">
+        `<a href="${pdfUrl}" target="_blank" rel="noopener noreferrer" class="pdf-link pdf-link-inline" title="View PDF">
           <i class="fa-solid fa-file-pdf"></i>
         </a>` : '';
       // イベント名をリンク化
       const eventUrl = this.safeUrl(pres.event_url);
       const eventText = this.escapeHtml(pres.event);
       const eventHtml = eventUrl ?
-        `<a href="${eventUrl}" target="_blank" rel="noopener noreferrer" class="event-link" title="Event Website" style="font-size: medium">${eventText}</a>` :
+        `<a href="${eventUrl}" target="_blank" rel="noopener noreferrer" class="event-link event-link-inline" title="Event Website">${eventText}</a>` :
         eventText;
       // Word Joiner (&#8288;) をカンマ直前に挿入し、カンマが行頭に来るのを防ぐ
       const title = this.escapeHtml(pres.title);
@@ -147,7 +147,7 @@ class EnhancedDataLoader {
             <span class="badge">${type}</span>
           </div>
           <h6 class="mb-0">${author}</h6>
-          <h6 class="mb-0" style="color: var(--text-muted)">
+          <h6 class="mb-0 presentation-meta-text">
             ${eventHtml}<br>${location}&#8288;, ${date}
           </h6>
         </div>

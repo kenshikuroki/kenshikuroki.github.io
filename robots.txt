@@ -1,3 +1,5 @@
+# Keep crawl policy simple for now.
+# Add Disallow rules only if non-public paths are introduced.
 User-agent: *
 Allow: /
 Sitemap: https://kenshikuroki.github.io/sitemap.xml

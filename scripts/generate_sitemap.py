@@ -10,6 +10,8 @@ class SitemapGenerator:
     self.base_url = base_url
     self.urls = []
     self.repo_root = Path(__file__).resolve().parent.parent
+    self.lastmod_source_file = 'index.html'
+    self.lastmod_source_value = ''
 
   def repo_path(self, relative_path):
     return self.repo_root / relative_path
@@ -61,6 +63,7 @@ class SitemapGenerator:
       'assets/data/presentations.json'
     ]
     newest_lastmod = index_lastmod
+    newest_source_file = 'index.html'
     for data_file in data_files:
       if self.repo_path(data_file).exists():
         lastmod = self.get_file_modification_date(data_file)
@@ -68,7 +71,10 @@ class SitemapGenerator:
         # But use their modification time to update main page lastmod
         if lastmod > newest_lastmod:
           newest_lastmod = lastmod
+          newest_source_file = data_file
     self.urls[0]['lastmod'] = newest_lastmod
+    self.lastmod_source_file = newest_source_file
+    self.lastmod_source_value = newest_lastmod
 
   def generate_xml(self):
     """Generate XML sitemap"""
@@ -101,6 +107,8 @@ class SitemapGenerator:
       f.write(xml_str)
     print(f"Sitemap generated: {sitemap_path}")
     print(f"Total URLs: {len(self.urls)}")
+    print(f"SITEMAP_LASTMOD={self.lastmod_source_value}")
+    print(f"SITEMAP_LASTMOD_SOURCE={self.lastmod_source_file}")
     for url in self.urls:
       print(f"  - {url['loc']} (last modified: {url['lastmod']})")
 

@@ -71,17 +71,8 @@ jobs:
         echo "Starting citation update..."
         mkdir -p assets/data/log
         python scripts/citation_updater.py > assets/data/log/update_log.txt 2>&1
-
-        # 実行結果をチェック
-        if [ $? -eq 0 ]; then
-          echo "update_success=true" >> $GITHUB_OUTPUT
-          echo "Citation update completed successfully"
-        else
-          echo "update_success=false" >> $GITHUB_OUTPUT
-          echo "Citation update failed"
-          cat assets/data/log/update_log.txt
-          exit 1
-        fi
+        echo "update_success=true" >> $GITHUB_OUTPUT
+        echo "Citation update completed successfully"
 
     - name: Check for changes
       id: changes

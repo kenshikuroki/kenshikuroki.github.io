@@ -20,6 +20,7 @@ class NavigationManager {
     this.isInitialized = false;
     this.scrollHandler = null;
     this.resizeHandler = null;
+    this.layoutObserver = null;
     // メソッドのバインド
     this.handleScroll = this.handleScroll.bind(this);
     this.handleNavClick = this.handleNavClick.bind(this);
@@ -45,6 +46,7 @@ class NavigationManager {
       return;
     }
     this.refreshSectionMetrics();
+    this.observeLayoutChanges();
     this.attachEventListeners();
     this.updateActiveLink(); // 初期状態の設定
     this.isInitialized = true;
@@ -82,6 +84,20 @@ class NavigationManager {
       top: section.offsetTop,
       bottom: section.offsetTop + section.offsetHeight
     }));
+  }
+
+  observeLayoutChanges() {
+    if (typeof ResizeObserver !== 'function') {
+      return;
+    }
+    this.layoutObserver = new ResizeObserver(() => {
+      this.refreshSectionMetrics();
+      this.handleScroll();
+    });
+    Array.from(this.sections || []).forEach(section => this.layoutObserver.observe(section));
+    if (this.header) {
+      this.layoutObserver.observe(this.header);
+    }
   }
   /**
    * スクロールハンドラー
@@ -122,7 +138,8 @@ class NavigationManager {
    * ナビゲーションクリックハンドラー
    */
   handleNavClick(e) {
-    const href = e.target.getAttribute('href');
+    const trigger = e.currentTarget;
+    const href = trigger?.getAttribute('href');
     if (!href || !href.startsWith('#')) {
       return;
     }
@@ -165,6 +182,10 @@ class NavigationManager {
     if (this.resizeHandler) {
       window.removeEventListener('resize', this.resizeHandler);
       this.resizeHandler = null;
+    }
+    if (this.layoutObserver) {
+      this.layoutObserver.disconnect();
+      this.layoutObserver = null;
     }
     if (this.navLinks) {
       this.navLinks.forEach(link => {
