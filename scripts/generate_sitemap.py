@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import datetime
+import subprocess
 from pathlib import Path
 import xml.etree.ElementTree as ET
 
@@ -25,8 +26,24 @@ class SitemapGenerator:
     self.urls.append(url_data)
 
   def get_file_modification_date(self, filepath):
-    """Get file modification date in YYYY-MM-DD format"""
+    """Get the file's last modification date from git history."""
     file_path = self.repo_path(filepath)
+    try:
+      result = subprocess.run(
+        ["git", "log", "-1", "--format=%cd", "--date=short", "--", str(filepath)],
+        cwd=self.repo_root,
+        capture_output=True,
+        text=True,
+        timeout=10,
+        check=False,
+      )
+      date_str = result.stdout.strip()
+      if date_str:
+        return date_str
+    except (subprocess.SubprocessError, OSError) as e:
+      print(f"git log failed for {filepath}: {e}")
+
+    # Fallback: use filesystem mtime only when git history is unavailable.
     if file_path.exists():
       timestamp = file_path.stat().st_mtime
       return datetime.datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d')
