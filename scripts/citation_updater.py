@@ -277,6 +277,7 @@ class EnhancedCitationUpdater:
     print(f"Updating {len(publications)} publications...")
     updated_count = 0
     failed_count = 0
+    change_summaries = []
     # 各論文の情報を更新
     for i, pub in enumerate(publications):
       print(f"\n[{i+1}/{len(publications)}] Processing: {pub.get('title', 'Unknown Title')[:60]}...")
@@ -300,6 +301,8 @@ class EnhancedCitationUpdater:
           updated_pub['last_updated'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
           publications[i] = updated_pub
           print(f"  ✅ Updated: {', '.join(changes)}")
+          title_for_summary = updated_pub.get('title') or pub.get('title') or 'Unknown Title'
+          change_summaries.append(f"- \"{title_for_summary}\": {', '.join(changes)}")
           updated_count += 1
         else:
           print(f"  ℹ️  No changes (citations: {updated_pub.get('citations', 0)})")
@@ -308,6 +311,19 @@ class EnhancedCitationUpdater:
         failed_count += 1
       # API制限対策
       time.sleep(2)
+
+    # ワークフローのコミットメッセージ用に変更サマリーを出力
+    summary_path = Path('changes_summary.md')
+    try:
+      with open(summary_path, 'w', encoding='utf-8') as f:
+        f.write("## Updated Publications\n\n")
+        if change_summaries:
+          f.write("\n".join(change_summaries) + "\n")
+        else:
+          f.write("No changes detected.\n")
+    except Exception as e:
+      print(f"Failed to write change summary: {e}")
+
     # 更新されたJSONを保存
     try:
       with open(self.json_path, 'w', encoding='utf-8') as f:
