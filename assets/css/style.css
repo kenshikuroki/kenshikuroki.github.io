@@ -103,8 +103,6 @@ NAVIGATION STYLES
   .navbar-nav .nav-link:hover::after,
   .navbar-nav .nav-link.active::after {
     width: 100%;
-  }
-  .navbar-nav .nav-link.active::after {
     height: 3px;
   }
   .navbar-brand::after {
@@ -117,9 +115,7 @@ NAVIGATION STYLES
     background: var(--primary-color);
     transition: width var(--transition-base);
     transform: translateX(-50%);
-  }
-  .navbar-brand:hover::after {
-    width: 100%;
+    display: none;
   }
 }
 /* Mobile navigation improvements */
