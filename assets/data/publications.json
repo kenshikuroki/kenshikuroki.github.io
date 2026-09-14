@@ -1,5 +1,19 @@
 [
   {
+    "title": "Tensor-polarized twist-3 distribution function $f_{LT}$ of spin-1 deuteron",
+    "authors": "S. Kumano and K. Kuroki",
+    "inspire_id": "3202766",
+    "links": [
+      {
+        "type": "arxiv",
+        "text": "arXiv:2609.12334",
+        "url": "https://arxiv.org/abs/2609.12334"
+      }
+    ],
+    "citations": 0,
+    "last_updated": "2026-07-13 17:14:23"
+  },
+  {
     "title": "Tensor-polarized parton distribution functions of the deuteron by a convolution model",
     "authors": "S. Kumano and K. Kuroki",
     "inspire_id": "3179588",
