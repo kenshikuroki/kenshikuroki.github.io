@@ -1,4 +1,13 @@
 [
+    {
+      "title": "Bayesian analysis of QGP formation based on core-corona picture in high-energy proton-proton collisions",
+      "author": "A. Shigeyoshi, K. Kuroki, and T. Hirano",
+      "type": "Contributed Talk",
+      "event": "New Frontiers in QCD 2026",
+      "event_url": "https://indico.yukawa.kyoto-u.ac.jp/event/59/",
+      "location": "YITP Kyoto University, Kyoto, Japan",
+      "date": "Oct. 22, 2026"
+    },
   {
     "title": "Derivation of the twist-2 relation for tensor-polarized PDFs via OPE and its applications",
     "author": "K. Kuroki and S. Kumano",
@@ -24,7 +33,7 @@
     "type": "Invited Talk",
     "event": "Tensor SIDIS Workshop & b1/Azz Collaboration Meeting",
     "event_url": "https://indico.jlab.org/event/1070/",
-    "location": "Newport News, USA",
+    "location": "JLab, Newport News, USA",
     "date": "Jun. 5, 2026",
     "url": "https://sophiamail-my.sharepoint.com/:b:/r/personal/01037251_sophiamail_sophia_ac_jp/Documents/Research/Conference/20260603-05_TensorSIDIS_kuroki/Talk_TensorSIDIS_kuroki.pdf?csf=1&web=1&e=WT1p17"
   },
@@ -63,7 +72,7 @@
     "type": "Invited Seminar",
     "event": "42nd Heavy Ion Pub workshop",
     "event_url": "https://hken.phys.nagoya-u.ac.jp/hip/hippages/hip42",
-    "location": "Kyoto University, Kyoto, Japan",
+    "location": "YITP Kyoto University, Kyoto, Japan",
     "date": "Mar. 26, 2025",
     "url": "https://sophiamail-my.sharepoint.com/:b:/g/personal/01037251_sophiamail_sophia_ac_jp/EZgxQVfe5NlIlvbDd3MwH58B_HZ4OjdJB14qwlWxu-TeMA?e=TJ9Rz6"
   },
@@ -73,7 +82,7 @@
     "type": "Invited Talk",
     "event": "2nd Workshop on Intersection of J-PARC and Heavy Ion Collision Experiments",
     "event_url": "https://kds.kek.jp/event/52868",
-    "location": "Tokai, Ibaraki, Japan",
+    "location": "KEK Tokai, Ibaraki, Japan",
     "date": "Mar. 7, 2025",
     "url": "https://sophiamail-my.sharepoint.com/:b:/g/personal/01037251_sophiamail_sophia_ac_jp/ES2dIel2wKVOtECRM1pBjMkBJeEhdzLCm8qNjLzdaLlQ_A?e=z6zOdC"
   },
@@ -113,7 +122,7 @@
     "type": "Invited Talk",
     "event": "International workshop on J-PARC hadron physics 2024 - J-PARC Hadron 2024",
     "event_url": "https://kds.kek.jp/event/49981",
-    "location": "Tokai, Ibaraki, Japan",
+    "location": "KEK Tokai, Ibaraki, Japan",
     "date": "Jul. 23, 2024",
     "url": "https://sophiamail-my.sharepoint.com/:b:/g/personal/01037251_sophiamail_sophia_ac_jp/EYML6Zz1jMRJjsRNuCcmogkB1u7KyTYqXjXvhRO1akcmGg?e=4slUKg"
   },
@@ -143,7 +152,7 @@
     "type": "Invited Seminar",
     "event": "Sohaken Seminar, Hiroshima University",
     "event_url": "http://theo.phys.sci.hiroshima-u.ac.jp/~sohaken/en/seminars/2023/0703_kuroki",
-    "location": "Hiroshima, Japan",
+    "location": "Hiroshima University, Hiroshima, Japan",
     "date": "Jul. 3, 2023",
     "url": "https://sophiamail-my.sharepoint.com/:b:/g/personal/01037251_sophiamail_sophia_ac_jp/EXZaynIV86hJijlEJcYH1sgB45g72NWkgtNhPL-etE6tRg?e=V4OwVo"
   },
