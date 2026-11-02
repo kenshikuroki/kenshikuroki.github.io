@@ -8,6 +8,11 @@
         "type": "arxiv",
         "text": "arXiv:2609.12334",
         "url": "https://arxiv.org/abs/2609.12334"
+      },
+      {
+        "type": "doi",
+        "text": "PoS (DIS2026) 245",
+        "url": "https://pos.sissa.it/515/"
       }
     ],
     "citations": 0,
