@@ -137,22 +137,33 @@ NAVIGATION STYLES
 LINKS STYLES
 ============================================================================= */
 /* display:inline にすることで Word Joiner (&#8288;) がカンマ前で正しく機能し、
-   行頭にカンマが来るのを防ぐ。ホバー時の浮き上がり効果は top で代替。 */
+   行頭にカンマが来るのを防ぐ。 */
 .links a {
   font-size: 1.2rem;
   display: inline;
-  position: relative;
-  top: 0;
   color: var(--text-muted);
-  transition: color var(--transition-base), top var(--transition-base);
+  background-image: linear-gradient(currentColor, currentColor);
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 100% 1px;
+  text-decoration: none;
+  transition:
+    color var(--transition-base),
+    background-size var(--transition-fast);
 }
 /* Hero section icon links: remove underline */
 .hero-section .links a {
   text-decoration: none;
 }
-.links a:hover {
+.links a:hover,
+.links a:focus-visible {
   color: var(--primary-color) !important;
-  top: -2px;
+  background-image: linear-gradient(var(--primary-color), var(--primary-color));
+  background-size: 100% 2px;
+}
+.links a.icon-link-xxl {
+  background-image: none;
+  font-size: xx-large;
 }
 
 .hero-subtitle,
@@ -160,9 +171,6 @@ LINKS STYLES
   color: var(--text-muted);
 }
 
-.links a.icon-link-xxl {
-  font-size: xx-large;
-}
 
 .links a.text-link-light {
   color: var(--text-light);
