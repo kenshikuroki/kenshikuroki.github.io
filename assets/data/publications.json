@@ -27,6 +27,11 @@
         "type": "arxiv",
         "text": "arXiv:2607.09237",
         "url": "https://arxiv.org/abs/2607.09237"
+      },
+      {
+        "type": "doi",
+        "text": "Phys.Rev.D 114, 094010 (2026)",
+        "url": "https://doi.org/10.1103/klqp-bk4t"
       }
     ],
     "citations": 2,
@@ -105,7 +110,7 @@
         "url": "https://arxiv.org/abs/2305.01977"
       }
     ],
-    "citations": 18,
-    "last_updated": "2026-10-22 13:31:11"
+    "citations": 20,
+    "last_updated": "2026-11-09 13:31:11"
   }
 ]
