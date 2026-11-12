@@ -78,6 +78,22 @@ class EnhancedDataLoader {
   renderPublications() {
     const container = document.getElementById('publications-container');
     if (!container) return;
+    const citationNote = document.getElementById('publications-citation-note');
+    const latestUpdate = this.publications
+      .map(pub => pub.last_updated?.slice(0, 10))
+      .filter(date => {
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return false;
+        const parsedDate = new Date(`${date}T00:00:00Z`);
+        return !Number.isNaN(parsedDate.getTime()) && parsedDate.toISOString().slice(0, 10) === date;
+      })
+      .sort()
+      .at(-1);
+    if (citationNote && latestUpdate) {
+      const [year, month, day] = latestUpdate.split('-').map(Number);
+      const monthName = new Intl.DateTimeFormat('en-US', { month: 'short', timeZone: 'UTC' })
+        .format(new Date(Date.UTC(year, month - 1, day)));
+      citationNote.innerHTML = `Citation data is based on <span class="links"><a class="text-link-medium" href="https://inspirehep.net/authors/2656506" target="_blank" rel="noopener noreferrer">INSPIRE</a></span> (${monthName}. ${day}, ${year})`;
+    }
     let html = '';
     const linkPriority = { doi: 0, arxiv: 1 };
     this.publications.forEach(pub => {
